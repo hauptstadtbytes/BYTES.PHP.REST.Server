@@ -1,0 +1,25 @@
+{
+    "name": "bytesgmbh/bytes.php.rest",
+    "description": "A (generic) framework for developing a RESTful (API) server",
+    "type": "project",
+    "license": "proprietary",
+    "version": "0.1-beta1",
+    "autoload": {
+        "psr-4": {
+            "BytesPhp\\Rest\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sebastian Räse",
+            "email": "sebastian.raese@hauptstadtbytes.de"
+        }
+    ],
+    "require": {
+        "bytesgmbh/bytes.php": "dev-main",
+        "slim/slim": "^4.12",
+        "slim/psr7": "^1.6",
+        "nyholm/psr7": "^1.8",
+        "nyholm/psr7-server": "^1.1"
+    }
+}
