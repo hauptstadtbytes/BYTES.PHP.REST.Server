@@ -1,3 +1,3 @@
 # Table of contents
 
-* [Installation](Installation.md)
+* [Installation](README.md)
