@@ -1,3 +1,3 @@
 # Table of contents
 
-* [Installation](README.md)
+* [First Steps & Installation](FirstSteps.md)

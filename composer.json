@@ -6,7 +6,7 @@
     "version": "0.1-beta1",
     "autoload": {
         "psr-4": {
-            "BytesPhp\\Rest\\": "src/"
+            "BytesPhp\\Rest\\Server\\": "src/"
         }
     },
     "authors": [
