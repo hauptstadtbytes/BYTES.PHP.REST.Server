@@ -48,6 +48,14 @@ class RequestContext{
                 return $this->request->getUri(); //see 'https://www.slimframework.com/docs/v4/objects/request.html' and 'https://discourse.slimframework.com/t/how-to-get-all-parameters-from-link/2003' for reference
                 break;
 
+            case "host":
+                return $this->request->getUri()->getHost();
+                break;
+
+            case "path":
+                return $this->request->getUri()->getPath();
+                break;
+
             case "method":
                 return $this->request->getMethod();
                 break;

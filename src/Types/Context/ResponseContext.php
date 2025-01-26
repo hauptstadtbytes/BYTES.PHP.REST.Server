@@ -10,15 +10,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 class ResponseContext{
 
     //private properties
-    private Response $response;
     private Request $request;
-
-    //public properties
-    public bool $statusFlag = true;
-    public string $statusMessage = "";
-    public int $statusCode = 200;
-
-    public $payload = [];
+    private Response $response;
 
     //constructur method
     public function __construct(Request $req, Response $res) {
@@ -28,22 +21,52 @@ class ResponseContext{
 
     }
 
-    //returns the ('slim') response
-    public function GetResponse(): Response{
+    //returns the default ('slim') response
+    public function GetResponse(int $statusCode = null, string $body = null, string $applicationType = null): Response{ // see 'https://stackoverflow.com/questions/23714383/what-are-all-the-possible-values-for-http-content-type-header' for application types
 
-        $bodyData = ['status' => ["successful" => $this->statusFlag, "message" => $this->statusMessage], 'metadata' => $this->GetMetadata(), "payload" => $this->payload];
-        $this->response->getBody()->write(json_encode($bodyData,JSON_PRETTY_PRINT));
+        if(is_null($statusCode)){
+            $statusCode = 200;
+        }
 
-        return $this->response->withHeader('Content-Type', 'application/json')->withStatus($this->statusCode);
+        if(!is_null($body)) {
+            $this->response->getBody()->write($body);
+        }
+
+        if(is_null($applicationType)) {
+
+            return $this->response->withStatus($statusCode);
+
+        } else {
+
+            return $this->response->withHeader('Content-Type', $applicationType)->withStatus($statusCode);
+
+        }
+        
     }
 
-    //returns the (default) response metadata
-    private function GetMetadata(): array{
+    //returns a JSON formatted response
+    public function GetJSONResponse(array $body, int $statusCode = null): Response {
 
-        $uri = $this->request->getUri();
-        $timestamp = new \DateTime("now", new \DateTimeZone("UTC")); //see 'https://stackoverflow.com/questions/8655515/get-utc-time-in-php' for reference
+        if(is_null($statusCode)){
+            $statusCode = 200;
+        }
 
-        return ["host" => $uri->getHost(), "path" => $uri->getPath(), "method" => $this->request->getMethod(), "timestamp" => $timestamp->format(\DateTime::RFC850)];
+        $this->response->getBody()->write(json_encode($body,JSON_PRETTY_PRINT));
+
+        return $this->response->withHeader('Content-Type', 'application/json')->withStatus($statusCode);
+
+    }
+
+    //returns a HTML response
+    public function GetHTMLResponse(string $body, string $head = null): Response {
+
+        if(is_null($head)){
+            $head = "";
+        }
+
+        $this->response->getBody()->write("<!DOCTYPE html><html><head>.$head.</head><body>".$body."</body></html>");
+
+        return $this->response->withHeader('Content-Type', 'text/html')->withStatus(200);
 
     }
 
