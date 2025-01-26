@@ -1,12 +1,12 @@
 <?php
 //set the namespace
-namespace BytesPhp\Rest\Server\API;
+namespace BytesPhp\Rest\Server\Types\Extension;
 
 //add namespace(s) required from 'BYTES.PHP' framework
 use BytesPhp\Reflection\ClassMetadata as ClassMetadata;
 
 //add internal namespace(s) required
-use BytesPhp\Rest\Server\Types\ApplicationContext as ApplicationContext;
+use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;
 
 //the extension (base) class
 class Extension{

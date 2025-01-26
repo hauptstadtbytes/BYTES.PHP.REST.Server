@@ -1,5 +1,4 @@
 <?php
-
 //set the namespace
 namespace BytesPhp\Rest\Server;
 
@@ -12,32 +11,32 @@ use Slim\Factory\AppFactory;
 use BytesPhp\IO\Helpers\IOHelper as IOHelper;
 
 //import internal namespace(s) required
-use BytesPhp\Rest\Server\Types\Settings as ApplicationSettings;
-use BytesPhp\Rest\Server\Types\ApplicationContext as ApplicationContext;
+use BytesPhp\Rest\Server\Types\Configuration as Configuration;
+use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;
 
-//the API server (root) class
-class Server{
+//the server (root) class
+class Server {
 
     //private variable(s)
-    private $slimApp = null;
-
     private ApplicationContext $context;
 
+    private $slimApp = null;
+
     //constructor method
-    function __construct(ApplicationSettings $settings = null) {
+    function __construct(Configuration $config = null) {
 
         //parse the (application) settings
-        if(is_null($settings)){
-            $settings = new ApplicationSettings();
+        if(is_null($config)){
+            $config = new Configuration();
         }
 
         //create a new (application) context instance
-        $this->context = new ApplicationContext($this, $settings);
+        $this->context = new ApplicationContext($this, $config);
 
         //create a new 'slim' application instance
         $this->slimApp = AppFactory::create();
-        
-    }
+    
+    } 
 
     //runs the (slim) server
     function run():void {
@@ -56,21 +55,10 @@ class Server{
         })());
 
         //register all endpoint extensions
-        foreach($this->context->extensions["BytesPhp\Rest\APIServer\API\EndpointExtensionInterface"]["enabled"] as $extension){
+        foreach($this->context->endpoints as $route => $instance){
 
-            //initialize the entpoint handler class instance
-            $instance = $extension->instance;
-            $instance->Initialize($this->context,$extension->metadata);
-
-            //calculate the route
-            $route = "/".trim($extension->metadata->route,"/");
-
-            if($extension->metadata->ContainsKey("workspace")){
-                $route = "/".trim($extension->metadata->workspace,"/")."/".trim($extension->metadata->route,"/");
-            }
-
-            //register the endpoint handler
-            $this->slimApp->map($this->context->supportedmethods,$route,$instance);
+            //register the endpoint handler(s)
+            $this->slimApp->map($this->context->configuration->methods,$route,$instance);
 
         }
 

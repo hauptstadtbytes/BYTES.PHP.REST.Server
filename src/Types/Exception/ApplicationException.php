@@ -1,13 +1,13 @@
 <?php
 //set the namespace
-namespace BytesPhp\Rest\Server\Types\Exceptions;
+namespace BytesPhp\Rest\Server\Types\Exception;
 
 //add (PHP) global namespaces required
 use RuntimeException;
 use Throwable;
 
 //internal namepsaces required
-use BytesPhp\Rest\Server\Types\RequestContext as RequestContext;
+use BytesPhp\Rest\Server\Types\Context\RequestContext as RequestContext;
 
 class ApplicationException extends RuntimeException{
 
@@ -37,5 +37,6 @@ class ApplicationException extends RuntimeException{
         $this->description = $description;
         return $this;
     }
+
 }
 ?>

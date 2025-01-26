@@ -1,6 +1,6 @@
 <?php
 //set the namespace
-namespace BytesPhp\Rest\Server\Types;
+namespace BytesPhp\Rest\Server\Types\Context;
 
 //add namespaces required from 'Slim' framework
 use Psr\Http\Message\ServerRequestInterface as Request;
