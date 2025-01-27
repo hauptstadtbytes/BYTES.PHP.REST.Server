@@ -6,7 +6,7 @@ namespace BytesPhp\Rest\Server\Tests\CookBook\Endpoints;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-//add namespaces required from API server API
+//add namespace(s) required from server package
 use BytesPhp\Rest\Server\Types\Extension\EndpointExtension as EndpointExtension;
 
 use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;

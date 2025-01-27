@@ -16,7 +16,7 @@ class ApplicationContext {
     private Server $server;
     private Configuration $config;
 
-    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension"];
+    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension"];
     private array $extensions = [];
 
     //constructur method
@@ -46,6 +46,10 @@ class ApplicationContext {
 
             case "endpoints":
                 return $this->getEntpoints();
+                break;
+
+            case "services":
+                return $this->getServices();
                 break;
                 
             default:
@@ -92,6 +96,34 @@ class ApplicationContext {
 
                     //add extension to output
                     $output[$cleanRoute] = $instance;
+
+                }
+
+            }
+
+        }
+
+        return $output;
+
+    }
+
+    //get all enabled services
+    private function getServices() {
+
+        $output = [];
+
+        foreach($this->config->services as $name => $className) { //loop for each service definition in the configuration
+
+            foreach($this->extensions["BytesPhp\Rest\Server\API\IServiceExtension"] as $extension) { //loop for each extension found (in search paths)
+
+                if($extension->className == $className) { //the class names are matching
+
+                    //initialize the entpoint handler class instance
+                    $instance = $extension->instance;
+                    $instance->Initialize($this,$extension->metadata);
+
+                    //add extension to output
+                    $output[$name] = $instance;
 
                 }
 
