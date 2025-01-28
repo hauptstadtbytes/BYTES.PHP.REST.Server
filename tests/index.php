@@ -19,7 +19,7 @@ require (__DIR__.'/../vendor/autoload.php'); //adjust this line to match your pr
 //create a new server configuration
 $config = new Configuration();
 
-$config->searchPaths = [__DIR__."/CookBook/Endpoints",__DIR__."/CookBook/Services"];
+$config->searchPaths = [__DIR__."/CookBook/Endpoints",__DIR__."/CookBook/Services",__DIR__."/../src/Implementations/Middleware"];
 
 $config->endpoints["/v1/hello"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint";
 $config->endpoints["/v1/dbitems"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\DBItemsEndpoint";

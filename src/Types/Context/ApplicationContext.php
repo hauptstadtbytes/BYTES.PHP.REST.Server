@@ -2,6 +2,9 @@
 //set the namespace
 namespace BytesPhp\Rest\Server\Types\Context;
 
+//add namespace(s) required from 'Slim' framework
+use Psr\Http\Message\ResponseInterface as Response;
+
 //add namespace(s) required from 'BYTES.PHP' framework
 use BytesPhp\Reflection\Extensibility\ExtensionsManager as ExtensionsManager;
 
@@ -16,7 +19,7 @@ class ApplicationContext {
     private Server $server;
     private Configuration $config;
 
-    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension"];
+    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension","BytesPhp\Rest\Server\API\IMiddlewareExtension"];
     private array $extensions = [];
 
     //constructur method
@@ -51,12 +54,23 @@ class ApplicationContext {
             case "services":
                 return $this->getServices();
                 break;
+
+            case "middlewares":
+                return $this->getMiddlewares();
+                break;
                 
             default:
                 return null;
             
         }
         
+    }
+
+    //returns a newly created response object
+    public function createNewResponse(): Response {
+
+        return $this->server->app->getResponseFactory()->createResponse();
+
     }
 
     //load all extensions (found)
@@ -124,6 +138,34 @@ class ApplicationContext {
 
                     //add extension to output
                     $output[$name] = $instance;
+
+                }
+
+            }
+
+        }
+
+        return $output;
+
+    }
+
+    //get all enabled middlewares
+    private function getMiddlewares() {
+
+        $output = [];
+
+        foreach($this->config->middlewares as $className) { //loop for each middleware definition in the configuration
+
+            foreach($this->extensions["BytesPhp\Rest\Server\API\IMiddlewareExtension"] as $extension) { //loop for each extension found (in search paths)
+
+                if($extension->className == $className) { //the class names are matching
+
+                    //initialize the entpoint handler class instance
+                    $instance = $extension->instance;
+                    $instance->Initialize($this,$extension->metadata);
+
+                    //add extension to output
+                    $output[] = $instance;
 
                 }
 

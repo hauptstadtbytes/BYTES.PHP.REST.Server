@@ -5,6 +5,7 @@ namespace BytesPhp\Rest\Server;
 //add namespace(s) required from 'slim' framework
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Slim\App as App; //see 'https://www.slimframework.com/docs/v4/objects/application.html' for more details
 use Slim\Factory\AppFactory;
 
 //add namespace(s) required from 'BYTES.PHP' framework
@@ -20,7 +21,7 @@ class Server {
     //private variable(s)
     private ApplicationContext $context;
 
-    private $slimApp = null;
+    private ?App $slimApp = null;
 
     //constructor method
     function __construct(Configuration $config = null) {
@@ -37,6 +38,22 @@ class Server {
         $this->slimApp = AppFactory::create();
     
     } 
+
+    //(public) getter (magic) method, for read-only properties
+    public function __get(string $property) {
+            
+        switch(strtolower($property)) {
+
+            case "app":
+                return $this->slimApp;
+                break;
+                
+            default:
+                return null;
+            
+        }
+        
+    }
 
     //runs the (slim) server
     function run():void {
@@ -59,6 +76,13 @@ class Server {
 
             //register the endpoint handler(s)
             $this->slimApp->map($this->context->configuration->methods,$route,$instance);
+
+        }
+
+        //register all middleware extensions
+        foreach($this->context->middlewares as $instance) {
+
+            $this->slimApp->add($instance);
 
         }
 

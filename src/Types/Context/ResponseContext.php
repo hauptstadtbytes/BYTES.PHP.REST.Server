@@ -6,6 +6,11 @@ namespace BytesPhp\Rest\Server\Types\Context;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+//add internal namespace(s) required
+use BytesPhp\Rest\Server\API\IResponseLayout as IResponseLayout;
+use BytesPhp\Rest\Server\Implementations\Response\JSONResponseLayout as JSONResponseLayout;
+use BytesPhp\Rest\Server\Types\Context\RequestContext as RequestContext;
+
 //the response context class
 class ResponseContext{
 
@@ -21,52 +26,13 @@ class ResponseContext{
 
     }
 
-    //returns the default ('slim') response
-    public function GetResponse(int $statusCode = null, string $body = null, string $applicationType = null): Response{ // see 'https://stackoverflow.com/questions/23714383/what-are-all-the-possible-values-for-http-content-type-header' for application types
+    public function getResponse(?IResponseLayout $layout = null) {
 
-        if(is_null($statusCode)){
-            $statusCode = 200;
+        if(is_null($layout)) {
+            $layout = new JSONResponseLayout(new RequestContext($this->request));
         }
 
-        if(!is_null($body)) {
-            $this->response->getBody()->write($body);
-        }
-
-        if(is_null($applicationType)) {
-
-            return $this->response->withStatus($statusCode);
-
-        } else {
-
-            return $this->response->withHeader('Content-Type', $applicationType)->withStatus($statusCode);
-
-        }
-        
-    }
-
-    //returns a JSON formatted response
-    public function GetJSONResponse(array $body, int $statusCode = null): Response {
-
-        if(is_null($statusCode)){
-            $statusCode = 200;
-        }
-
-        $this->response->getBody()->write(json_encode($body,JSON_PRETTY_PRINT));
-
-        return $this->response->withHeader('Content-Type', 'application/json')->withStatus($statusCode);
-
-    }
-
-    //returns a HTML response
-    public function GetHTMLResponse(string $body, string $head = null): Response {
-
-        if(is_null($head)){
-            $head = "";
-        }
-
-        $this->response->getBody()->write("<!DOCTYPE html><html><head>.$head.</head><body>".$body."</body></html>");
-
-        return $this->response->withHeader('Content-Type', 'text/html')->withStatus(200);
+        return $layout->getResponse($this->response);
 
     }
 

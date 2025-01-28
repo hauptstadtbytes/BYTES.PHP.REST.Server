@@ -9,6 +9,7 @@ class Configuration{
     public array $searchPaths = []; //e.g. [__DIR__."/CookBook/Endpoints", "<Another Path>"]
     public array $endpoints = [];  //e.g. [[/v1/hello => "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint"],[/<workspace>/<endpoint> => <full qualified class name>]]
     public array $services = []; //e.g. [[db => "BytesPhp\Rest\Server\Tests\CookBook\Services\DBService"],[<name> => <full qualified class name>]]
+    public array $middlewares = ["BytesPhp\Rest\Server\Implementations\Middleware\TrailingSlashMiddleware"];
     public array $methods = []; //e.g. ["GET","POST","PUT","PATCH","DELETE","OPTIONS"]
     public array $arguments = []; //e.g. ["db" => [host => "localhost","user" => "ABC", "password" => "123"], [<name> => [<arguments>]]]]
 

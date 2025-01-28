@@ -16,6 +16,8 @@ use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;
 use BytesPhp\Rest\Server\Types\Context\RequestContext as RequestContext;
 use BytesPhp\Rest\Server\Types\Context\ResponseContext as ResponseContext;
 
+use BytesPhp\Rest\Server\Implementations\Response\JSONResponseLayout as JSONResponseLayout;
+
 /**
  * @decription a simple endpoint extension for database interactions
  */
@@ -27,10 +29,12 @@ class DBItemsEndpoint extends EndpointExtension {
         //get the database service
         $dbService = $appContext->services["db"];
 
-        //return the output value(s)
-        $timestamp = new \DateTime("now", new \DateTimeZone("UTC")); //see 'https://stackoverflow.com/questions/8655515/get-utc-time-in-php' for reference
+        //assemble the output value
+        $layout = new JSONResponseLayout($reqContext);
+        $layout->payload = $dbService->getItems();
 
-        return $resContext->GetJSONResponse(['status' => ["successful" => true, "message" => ""], 'metadata' => ["host" => $reqContext->host, "path" => $reqContext->path, "method" => $reqContext->method, "timestamp" => $timestamp->format(\DateTime::RFC850)], "payload" => $dbService->getItems()]);
+        //return the output value
+        return $resContext->getResponse($layout);
 
     }
 
@@ -46,14 +50,18 @@ class DBItemsEndpoint extends EndpointExtension {
         //add the item 
         $items = $dbService->addItem($requestData->title,$requestData->content);
 
-        //return the output value
-        $timestamp = new \DateTime("now", new \DateTimeZone("UTC")); //see 'https://stackoverflow.com/questions/8655515/get-utc-time-in-php' for reference
+        //assemble the output value
+        $layout = new JSONResponseLayout($reqContext);
 
         if(count($items) == 1){ //the item was added successfully
-            return $resContext->GetJSONResponse(['status' => ["successful" => true, "message" => "Item added successfully"], 'metadata' => ["host" => $reqContext->host, "path" => $reqContext->path, "method" => $reqContext->method, "timestamp" => $timestamp->format(\DateTime::RFC850)], "payload" => $items]);
+            $layout->payload = $items;
         } else { //adding the item failed
-            return $resContext->GetJSONResponse(['status' => ["successful" => false, "message" => "Failed to add item"], 'metadata' => ["host" => $reqContext->host, "path" => $reqContext->path, "method" => $reqContext->method, "timestamp" => $timestamp->format(\DateTime::RFC850)], "payload" => []]);
+            $layout->successful = false;
+            $layout->message = "Failed to add item";
         }
+
+        //return the output value
+        return $resContext->getResponse($layout);
         
     }
 

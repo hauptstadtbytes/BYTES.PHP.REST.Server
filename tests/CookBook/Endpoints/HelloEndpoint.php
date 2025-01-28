@@ -13,6 +13,9 @@ use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;
 use BytesPhp\Rest\Server\Types\Context\RequestContext as RequestContext;
 use BytesPhp\Rest\Server\Types\Context\ResponseContext as ResponseContext;
 
+use BytesPhp\Rest\Server\Types\Implementations\JSONResponseLayout as JSONResponseLayout;
+use BytesPhp\Rest\Server\Types\Implementations\HTMLResponseLayout as HTMLResponseLayout;
+
 /**
  * @decription a simple 'hello world' endpoint extension
  */
@@ -30,26 +33,30 @@ class HelloEndpoint extends EndpointExtension {
             $outputFormat = $queries["format"];
         }
 
+        //assemble the output
+        $layout = new JSONResponseLayout($reqContext); //set the JSON output as default
+
         switch(strtolower($outputFormat)) {
             case "json":
-                //create a new timestamp
-                $timestamp = new \DateTime("now", new \DateTimeZone("UTC")); //see 'https://stackoverflow.com/questions/8655515/get-utc-time-in-php' for reference
-
-                //return the output value
-                return $resContext->GetJSONResponse(['status' => ["successful" => true, "message" => "Hello world!"], 'metadata' => ["host" => $reqContext->host, "path" => $reqContext->path, "method" => $reqContext->method, "timestamp" => $timestamp->format(\DateTime::RFC850)], "payload" => []]);
+                //set the message
+                $layout->message = "Hello World!";
                 break;
 
             case "html":
-                return $resContext->GetHTMLResponse("<h1>Hello</h1><p>...world!</p>");
+                //create the output layout
+                $layout = new HTMLResponseLayout($reqContext);
+                $layout->body = "<h1>Hello</h1><p>...world!</p>";
                 break;
 
             default:
-                //create a new timestamp
-                $timestamp = new \DateTime("now", new \DateTimeZone("UTC")); //see 'https://stackoverflow.com/questions/8655515/get-utc-time-in-php' for reference
-
-                //return the output value
-                return $resContext->GetJSONResponse(['status' => ["successful" => false, "message" => "Format Unkown"], 'metadata' => ["host" => $reqContext->host, "path" => $reqContext->path, "method" => $reqContext->method, "timestamp" => $timestamp->format(\DateTime::RFC850)], "payload" => []],400); //set the status code for 'bad request'
+                //set the (error) message
+                $layout->successful = false;
+                $layout->statusCode = 400;
+                $layout->message = "Format unkown";
         }
+
+        //return the output value
+        return $resContext->getResponse($layout);
 
     }
 
