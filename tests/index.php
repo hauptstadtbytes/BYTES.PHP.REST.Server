@@ -19,9 +19,11 @@ require (__DIR__.'/../vendor/autoload.php'); //adjust this line to match your pr
 //create a new server configuration
 $config = new Configuration();
 
-$config->searchPaths = [__DIR__."/CookBook/Endpoints",__DIR__."/CookBook/Services",__DIR__."/../src/Implementations/Middleware"];
+$config->searchPaths = [__DIR__."/CookBook/Endpoints",__DIR__."/CookBook/Services",__DIR__."/../src/Implementations/Middleware",__DIR__."/../src/Implementations/ErrorHandler"];
 
 $config->endpoints["/v1/hello"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint";
+$config->endpoints["/v1/hello/{id}"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint"; //re-assign the endpoint with "id" route argument, see "https://www.slimframework.com/docs/v2/routing/params.html" for details
+
 $config->endpoints["/v1/dbitems"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\DBItemsEndpoint";
 
 $config->services["db"] = "BytesPhp\Rest\Server\Tests\CookBook\Services\DBService";

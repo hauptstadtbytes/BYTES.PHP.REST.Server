@@ -13,8 +13,8 @@ use BytesPhp\Rest\Server\Types\Context\ApplicationContext as ApplicationContext;
 use BytesPhp\Rest\Server\Types\Context\RequestContext as RequestContext;
 use BytesPhp\Rest\Server\Types\Context\ResponseContext as ResponseContext;
 
-use BytesPhp\Rest\Server\Types\Implementations\JSONResponseLayout as JSONResponseLayout;
-use BytesPhp\Rest\Server\Types\Implementations\HTMLResponseLayout as HTMLResponseLayout;
+use BytesPhp\Rest\Server\Implementations\Response\JSONResponseLayout as JSONResponseLayout;
+use BytesPhp\Rest\Server\Implementations\Response\HTMLResponseLayout as HTMLResponseLayout;
 
 /**
  * @decription a simple 'hello world' endpoint extension
@@ -33,6 +33,9 @@ class HelloEndpoint extends EndpointExtension {
             $outputFormat = $queries["format"];
         }
 
+        //write to default log
+        //$appContext->log->info("Hello requested");
+
         //assemble the output
         $layout = new JSONResponseLayout($reqContext); //set the JSON output as default
 
@@ -40,6 +43,7 @@ class HelloEndpoint extends EndpointExtension {
             case "json":
                 //set the message
                 $layout->message = "Hello World!";
+                $layout->payload = $reqContext->arguments;
                 break;
 
             case "html":

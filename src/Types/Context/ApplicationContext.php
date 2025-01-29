@@ -19,7 +19,7 @@ class ApplicationContext {
     private Server $server;
     private Configuration $config;
 
-    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension","BytesPhp\Rest\Server\API\IMiddlewareExtension"];
+    private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension","BytesPhp\Rest\Server\API\IMiddlewareExtension","BytesPhp\Rest\Server\API\IErrorhandlerExtension"];
     private array $extensions = [];
 
     //constructur method
@@ -43,6 +43,10 @@ class ApplicationContext {
                 return $this->config;
                 break;
 
+            //case "log":
+                //return $this->server->app->getContainer()->get('LoggerInterface::class');
+                //break;
+
             case "extensions":
                 return $this->extensions;
                 break;
@@ -57,6 +61,10 @@ class ApplicationContext {
 
             case "middlewares":
                 return $this->getMiddlewares();
+                break;
+
+            case "errorhandler":
+                return $this->getErrorHandler();
                 break;
                 
             default:
@@ -168,6 +176,32 @@ class ApplicationContext {
                     $output[] = $instance;
 
                 }
+
+            }
+
+        }
+
+        return $output;
+
+    }
+
+    //returns the error handler instance enabled
+    private function getErrorHandler() {
+
+        $output = null;
+
+        $className = $this->config->errorHandler;
+
+        foreach($this->extensions["BytesPhp\Rest\Server\API\IErrorhandlerExtension"] as $extension) { //loop for each extension found (in search paths)
+
+            if($extension->className == $className) { //the class names are matching
+
+                //initialize the entpoint handler class instance
+                $instance = $extension->instance;
+                $instance->Initialize($this,$extension->metadata);
+
+                //add extension to output
+                $output = $instance;
 
             }
 

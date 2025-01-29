@@ -36,6 +36,8 @@ class Server {
 
         //create a new 'slim' application instance
         $this->slimApp = AppFactory::create();
+
+        //$this->slimApp->addRoutingMiddleware(); //see 'https://discourse.slimframework.com/t/about-addroutingmiddleware-routing-middleware-slim-4/3957/2' for reference
     
     } 
 
@@ -70,6 +72,16 @@ class Server {
             }
             return '';
         })());
+
+        //setup custom error handling (if configured)
+        if(!is_null($this->context->errorhandler)) {
+
+            //see 'https://www.slimframework.com/docs/v4/middleware/error-handling.html' for reference
+            $errorMiddleware = $this->slimApp->addErrorMiddleware(true, true, true);
+
+            $errorMiddleware->setDefaultErrorHandler($this->context->errorhandler);
+
+        }
 
         //register all endpoint extensions
         foreach($this->context->endpoints as $route => $instance){
