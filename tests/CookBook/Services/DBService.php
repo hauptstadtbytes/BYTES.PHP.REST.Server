@@ -18,7 +18,7 @@ class DBService extends ServiceExtension {
         $output = [];
 
         //get the connection parameters
-        $args = $this->appContext->configuration->arguments;
+        $args = $this->appContext->configuration->arguments["db"];
 
         if(array_key_exists("db",$args)) { //check for the connection arguments
 

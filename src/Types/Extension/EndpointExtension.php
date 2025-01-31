@@ -24,10 +24,18 @@ class EndpointExtension extends Extension implements IEndpointExtension{
     //the (default) invoking method (called by the Slim framework)
     public function __invoke(Request $request, Response $response, array $args) {
 
-        //call the (method-related) request handling method
+        //create the context
         $reqContext = new RequestContext($request, $args); //create a new request context instance
         $resContext = new ResponseContext($request, $response); //create a new response context instance
 
+        //perform the preexecution
+        $preExResult = $this->OnPreexecution($this->appContext, $reqContext, $resContext);
+
+        if(!is_null($preExResult)){
+            return $preExResult;
+        }
+
+        //invoke the method handler, returning the output
         switch (strtolower($reqContext->method) ) {
             case "get":
                 return $this->HandleGETRequest($this->appContext, $reqContext, $resContext);
@@ -50,6 +58,12 @@ class EndpointExtension extends Extension implements IEndpointExtension{
             default:
                 throw new HttpMethodNotAllowedException($request);
         }
+    }
+
+    function OnPreexecution(ApplicationContext $appContext, RequestContext $reqContext, ResponseContext $resContext) : ?Response {
+
+        return null;
+
     }
 
     function HandleGETRequest(ApplicationContext $appContext, RequestContext $reqContext, ResponseContext $resContext) : Response {

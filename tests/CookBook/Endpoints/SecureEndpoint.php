@@ -26,28 +26,39 @@ class SecureEndpoint extends EndpointExtension {
     //handles the GET request
     function HandleGETRequest(ApplicationContext $appContext, RequestContext $reqContext, ResponseContext $resContext) : Response {
 
+        //return the output value
+        $layout = new JSONResponseLayout($reqContext);
+
+        $layout->message = "Successfully authenticated";
+
+        return $resContext->getResponse($layout);
+
+    }
+
+    //perform preexecution checks (i.e. for header token)
+    function OnPreexecution(ApplicationContext $appContext, RequestContext $reqContext, ResponseContext $resContext) : ?Response {
+
         //get the security token
         $baererToken = $this->GetBaererToken($reqContext->headers);
 
         //check the header token and return the outout
         $layout = new JSONResponseLayout($reqContext);
 
-        if(is_null($baererToken)) {
-            $layout->statusCode = 401;
-            $layout->successful = false;
-            $layout->message = "Authentication failed";
-        } else {
+        $layout->statusCode = 401;
+        $layout->successful = false;
+        $layout->message = "Authentication failed";
+
+        if(!is_null($baererToken)) {
 
             if($appContext->services["auth"]->checkToken($baererToken)) {
-                $layout->message = "Successfully authenticated";
-            } else{
-                $layout->statusCode = 401;
-                $layout->successful = false;
-                $layout->message = "Authentication failed";
-            }
+
+                return null;
+
+            } 
 
         }
 
+        //return the default output value
         return $resContext->getResponse($layout);
 
     }
