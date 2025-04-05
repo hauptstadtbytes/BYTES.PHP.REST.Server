@@ -7,6 +7,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 //add namespace(s) required from 'BYTES.PHP' framework
 use BytesPhp\Reflection\Extensibility\PluginsManager as PluginsManager;
+use BytesPhp\IO\FolderInfo as FolderInfo;
 
 //import internal namespace(s) required
 use BytesPhp\Rest\Server\Server as Server;
@@ -84,13 +85,25 @@ class ApplicationContext {
     //load all plugins found
     private function loadPlugins(array $searchPaths):void {
 
+        //extend the search paths
+        $extendedSearchPaths = [];
+
+        foreach($searchPaths as $searchPath) {
+
+            $extendedSearchPaths[] = $searchPath;
+
+            $extendedSearchPaths = array_merge($extendedSearchPaths,FolderInfo::ListFolders($searchPath));
+            
+        }
+
+        //load the plugins
         $pluginsManager = new PluginsManager(); //create a new plugins manager class instance
 
         $output = [];
 
         foreach($this->exInterfaces as $interface){ //loop for each interface known
 
-            $output[$interface] = $pluginsManager->GetPlugins($searchPaths,$interface);
+            $output[$interface] = $pluginsManager->GetPlugins($extendedSearchPaths,$interface);
 
         }
 
