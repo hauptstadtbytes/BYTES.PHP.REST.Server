@@ -6,9 +6,6 @@ namespace BytesPhp\Rest\Server\Tests\CookBook\Endpoints;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
-//import external type(s) required from 'PHP-Libs' framework
-use BytesPhp\Primitives\Helpers\StringHelper as StringHelper;
-
 //add namespace(s) required from server package
 use BytesPhp\Rest\Server\Types\Extension\EndpointExtension as EndpointExtension;
 
@@ -75,7 +72,7 @@ class SecureEndpoint extends EndpointExtension {
 
         foreach($headers["Authorization"] as $token){
 
-            if(StringHelper::StartsWith($token,"Bearer ")) {
+            if(string_startswith($token,"Bearer ")) {
 
                 return substr($token,7);
 

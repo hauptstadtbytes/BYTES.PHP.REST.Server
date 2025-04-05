@@ -23,7 +23,12 @@ class DBService extends ServiceExtension {
         if(array_key_exists("db",$args)) { //check for the connection arguments
 
             //create a new database collection (see 'https://www.php-einfach.de/mysql-tutorial/daten-ausgeben/' for more details)
-            $pdo = new \PDO("mysql:host=".$args["db"]["host"].";dbname=".$args["db"]["collection"], $args["db"]["user"], $args["db"]["password"]);
+            try {
+                $pdo = new \PDO("mysql:host=".$args["db"]["host"].";dbname=".$args["db"]["collection"], $args["db"]["user"], $args["db"]["password"],array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                echo("successfully connected\n");
+            } catch(PDOException $ex) {
+                echo("error connecting\n");
+            }
 
             $sql = "";
 
@@ -35,6 +40,7 @@ class DBService extends ServiceExtension {
             
             //create the output list
             foreach($pdo->query($sql) as $row) {
+                echo("found\n");
                 $output[] = ["id" => $row["id"],"title" => $row["title"],"content" => $row["content"]];
             }
 

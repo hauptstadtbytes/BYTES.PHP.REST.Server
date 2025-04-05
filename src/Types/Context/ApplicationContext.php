@@ -6,7 +6,7 @@ namespace BytesPhp\Rest\Server\Types\Context;
 use Psr\Http\Message\ResponseInterface as Response;
 
 //add namespace(s) required from 'BYTES.PHP' framework
-use BytesPhp\Reflection\Extensibility\ExtensionsManager as ExtensionsManager;
+use BytesPhp\Reflection\Extensibility\PluginsManager as PluginsManager;
 
 //import internal namespace(s) required
 use BytesPhp\Rest\Server\Server as Server;
@@ -30,7 +30,7 @@ class ApplicationContext {
         $this->config = $config;
 
         //load the extensions
-        $this->loadExtensions($this->config->searchPaths);
+        $this->loadPlugins($this->config->searchPaths);
 
     }
 
@@ -81,16 +81,16 @@ class ApplicationContext {
 
     }
 
-    //load all extensions (found)
-    private function loadExtensions(array $searchPaths):void {
+    //load all plugins found
+    private function loadPlugins(array $searchPaths):void {
 
-        $exManager = new ExtensionsManager(); //create a new extensions manager class instance
+        $pluginsManager = new PluginsManager(); //create a new plugins manager class instance
 
         $output = [];
 
         foreach($this->exInterfaces as $interface){ //loop for each interface known
 
-            $output[$interface] = $exManager->GetExtensions($searchPaths,$interface);
+            $output[$interface] = $pluginsManager->GetPlugins($searchPaths,$interface);
 
         }
 
@@ -107,7 +107,7 @@ class ApplicationContext {
 
             foreach($this->extensions["BytesPhp\Rest\Server\API\IEndpointExtension"] as $extension) { //loop for each extension found (in search paths)
 
-                if($extension->className == $className) { //the class names are matching
+                if($extension->name == $className) { //the class names are matching
 
                     //initialize the entpoint handler class instance
                     $instance = $extension->instance;
@@ -138,7 +138,7 @@ class ApplicationContext {
 
             foreach($this->extensions["BytesPhp\Rest\Server\API\IServiceExtension"] as $extension) { //loop for each extension found (in search paths)
 
-                if($extension->className == $className) { //the class names are matching
+                if($extension->name == $className) { //the class names are matching
 
                     //initialize the entpoint handler class instance
                     $instance = $extension->instance;
@@ -166,7 +166,7 @@ class ApplicationContext {
 
             foreach($this->extensions["BytesPhp\Rest\Server\API\IMiddlewareExtension"] as $extension) { //loop for each extension found (in search paths)
 
-                if($extension->className == $className) { //the class names are matching
+                if($extension->name == $className) { //the class names are matching
 
                     //initialize the entpoint handler class instance
                     $instance = $extension->instance;
@@ -194,7 +194,7 @@ class ApplicationContext {
 
         foreach($this->extensions["BytesPhp\Rest\Server\API\IErrorhandlerExtension"] as $extension) { //loop for each extension found (in search paths)
 
-            if($extension->className == $className) { //the class names are matching
+            if($extension->name == $className) { //the class names are matching
 
                 //initialize the entpoint handler class instance
                 $instance = $extension->instance;

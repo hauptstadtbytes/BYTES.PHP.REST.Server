@@ -11,7 +11,7 @@ use BytesPhp\Rest\Server\Server as Server;
 use BytesPhp\Rest\Server\Types\Configuration as Configuration;
 
 //add namespace(s) required from 'BYTES.PHP' framework
-use BytesPhp\IO\Helpers\IOHelper as IOHelper;
+use BytesPhp\IO\FolderInfo as FolderInfo;
 
 //embed the composer auto-loading
 require (__DIR__.'/../vendor/autoload.php'); //adjust this line to match your project structure
@@ -38,8 +38,12 @@ $config->arguments["db"] = ["host" => "localhost", "collection" => "d0429d27", "
 $config->arguments["cors"] = ["origin" => "*", "headers" => "X-Requested-With, Content-Type, Accept, Origin, Authorization"]; //setup CORS
 
 //add (custom) files required
-foreach(IOHelper::Files($config->searchPaths) as $file) {
-    require_once($file);
+foreach($config->searchPaths as $searchPath) {
+
+    foreach(FolderInfo::ListFiles($searchPath) as $file) {
+        require_once($file);
+    }
+
 }
 
 //create a new server instance
