@@ -122,7 +122,43 @@ class ApplicationContext {
 
         $output = [];
 
-        foreach($this->config->endpoints as $route => $className) { //loop for each endpoint definition in the configuration
+        //loop for each known endpoint extension
+        foreach($this->extensions["BytesPhp\Rest\Server\API\IEndpointExtension"] as $extension) {
+
+            if($extension->metadata->ContainsKey("route")){ //check for the route metadata
+
+                //initialize the entpoint handler class instance
+                $instance = $extension->instance;
+                $instance->Initialize($this,$extension->metadata);
+
+                if(string_contains($extension->metadata->route,"|")){
+
+                    foreach(explode("|",$extension->metadata->route) as $route){
+
+                        //clean the route
+                        $cleanRoute = "/".trim($route,"/");
+
+                        //add extension to output
+                        $output[$cleanRoute] = $instance;
+
+                    }
+
+                } else {
+
+                    //clean the route
+                    $cleanRoute = "/".trim($extension->metadata->route,"/");
+
+                    //add extension to output
+                    $output[$cleanRoute] = $instance;
+
+                }
+
+            }
+
+        }
+
+        //loop for each endpoint definition in the configuration
+        foreach($this->config->endpoints as $route => $className) {
 
             foreach($this->extensions["BytesPhp\Rest\Server\API\IEndpointExtension"] as $extension) { //loop for each extension found (in search paths)
 

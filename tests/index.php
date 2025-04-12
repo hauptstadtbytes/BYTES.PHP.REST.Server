@@ -22,9 +22,9 @@ $config = new Configuration();
 
 $config->searchPaths = [__DIR__."/CookBook/Endpoints",__DIR__."/CookBook/Services",__DIR__."/../src/Implementations/Middleware",__DIR__."/../src/Implementations/ErrorHandler"];
 
-$config->endpoints["/v1/hello"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint";
-$config->endpoints["/v1/info"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\InfoEndpoint";
-$config->endpoints["/v1/hello/{id}"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint"; //re-assign the endpoint with "id" route argument, see "https://www.slimframework.com/docs/v2/routing/params.html" for details
+//$config->endpoints["/v1/hello"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint"; //is registered automatically by endpoint metadata (see BYTESPHP-26)
+//$config->endpoints["/v1/info"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\InfoEndpoint"; //is registered automatically by endpoint metadata (see BYTESPHP-26)
+//$config->endpoints["/v1/hello/{id}"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\HelloEndpoint"; //re-assign the endpoint with "id" route argument, see "https://www.slimframework.com/docs/v2/routing/params.html" for details
 $config->endpoints["/v1/secure"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\SecureEndpoint"; //a reference implementation of a "header-secured" endpoint
 
 $config->endpoints["/v1/dbitems"] = "BytesPhp\Rest\Server\Tests\CookBook\Endpoints\DBItemsEndpoint";

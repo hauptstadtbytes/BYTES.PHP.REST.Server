@@ -18,6 +18,7 @@ use BytesPhp\Rest\Server\Implementations\Response\HTMLResponseLayout as HTMLResp
 
 /**
  * @decription a simple 'PHP info' endpoint extension
+ * @route /v1/info
  */
 class InfoEndpoint extends EndpointExtension {
 

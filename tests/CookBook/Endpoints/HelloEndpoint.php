@@ -18,6 +18,7 @@ use BytesPhp\Rest\Server\Implementations\Response\HTMLResponseLayout as HTMLResp
 
 /**
  * @decription a simple 'hello world' endpoint extension
+ * @route /v1/hello|/v1/hello/{id}
  */
 class HelloEndpoint extends EndpointExtension {
 
