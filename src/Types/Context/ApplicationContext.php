@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 //add namespace(s) required from 'BYTES.PHP' framework
 use BytesPhp\Reflection\Extensibility\PluginsManager as PluginsManager;
 use BytesPhp\IO\FolderInfo as FolderInfo;
+use BytesPhp\Logging\Log as Log;
 
 //import internal namespace(s) required
 use BytesPhp\Rest\Server\Server as Server;
@@ -23,6 +24,8 @@ class ApplicationContext {
     private array $exInterfaces = ["BytesPhp\Rest\Server\API\IEndpointExtension","BytesPhp\Rest\Server\API\IServiceExtension","BytesPhp\Rest\Server\API\IMiddlewareExtension","BytesPhp\Rest\Server\API\IErrorhandlerExtension"];
     private array $extensions = [];
 
+    private Log $log;
+
     //constructur method
     public function __construct(Server $server, Configuration $config) {
 
@@ -32,6 +35,9 @@ class ApplicationContext {
 
         //load the extensions
         $this->loadPlugins($this->config->searchPaths);
+
+        //create a new log instance
+        $this->log = new Log();
 
     }
 
@@ -44,9 +50,9 @@ class ApplicationContext {
                 return $this->config;
                 break;
 
-            //case "log":
-                //return $this->server->app->getContainer()->get('LoggerInterface::class');
-                //break;
+            case "log":
+                return $this->log;
+                break;
 
             case "extensions":
                 return $this->extensions;

@@ -12,6 +12,7 @@ use BytesPhp\Rest\Server\Types\Configuration as Configuration;
 
 //add namespace(s) required from 'BYTES.PHP' framework
 use BytesPhp\IO\FolderInfo as FolderInfo;
+use BytesPhp\Logging\Appenders\RollingFileAppender as RollingFileAppender;
 
 //embed the composer auto-loading
 require (__DIR__.'/../vendor/autoload.php'); //adjust this line to match your project structure
@@ -49,6 +50,14 @@ foreach($config->searchPaths as $searchPath) {
 
 //create a new server instance
 $server = new Server($config);
+
+//add a rolling file appender to the server log
+$rollingFileAppender = new RollingFileAppender(__DIR__."/Data");
+$rollingFileAppender->LineTemplate = "{Year}-{Month}-{Day} {Hour}:{Minute}:{Second};{Level};{Message}\n";
+$rollingFileAppender->FileName = "{Year}-{Month}-{Day}.Log";
+$server->log->RegisterAppender($rollingFileAppender );
+
+//$server->log->Info("Server initialized");
 
 //runt the server/ handle the request
 $server->run();

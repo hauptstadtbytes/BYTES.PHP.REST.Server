@@ -49,6 +49,10 @@ class Server {
             case "app":
                 return $this->slimApp;
                 break;
+
+            case "log":
+                return $this->context->log;
+                break;
                 
             default:
                 return null;

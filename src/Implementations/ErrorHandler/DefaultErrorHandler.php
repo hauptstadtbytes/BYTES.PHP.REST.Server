@@ -43,6 +43,9 @@ class DefaultErrorHandler extends ErrorHandlerExtension {
                 $layout->message = $exception->getMessage();
         }
 
+        //write the event to the server log
+        $appContext->log->Exception($layout->message."|".$reqContext->path."|".$reqContext->method);
+
         //return the response
         return $resContext->getResponse($layout);
 
