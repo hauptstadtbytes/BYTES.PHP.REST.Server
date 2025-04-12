@@ -9,7 +9,7 @@ use Slim\App as App; //see 'https://www.slimframework.com/docs/v4/objects/applic
 use Slim\Factory\AppFactory;
 
 //add namespace(s) required from 'BYTES.PHP' framework
-use BytesPhp\IO\Helpers\IOHelper as IOHelper;
+use BytesPhp\IO\FolderInfo as FolderInfo;
 
 //import internal namespace(s) required
 use BytesPhp\Rest\Server\Types\Configuration as Configuration;
@@ -37,7 +37,14 @@ class Server {
         //create a new 'slim' application instance
         $this->slimApp = AppFactory::create();
 
-        //$this->slimApp->addRoutingMiddleware(); //see 'https://discourse.slimframework.com/t/about-addroutingmiddleware-routing-middleware-slim-4/3957/2' for reference
+        //add (custom) files required
+        foreach($config->searchPaths as $searchPath) {
+
+           foreach(FolderInfo::ListFiles($searchPath) as $file) {
+                require_once($file);
+            }
+
+        }
     
     } 
 

@@ -39,14 +39,14 @@ $config->methods = ["GET","POST","PUT","PATCH","DELETE","OPTIONS"];
 $config->arguments["db"] = ["host" => "localhost", "collection" => "d0429d27", "user" => "d0429d27", "password" => "ogUZwy9WbDnvmesqZEBJ"];
 $config->arguments["cors"] = ["origin" => "*", "headers" => "X-Requested-With, Content-Type, Accept, Origin, Authorization"]; //setup CORS
 
-//add (custom) files required
-foreach($config->searchPaths as $searchPath) {
+//add (custom) files required; loaded automatically (see BYTESPHP-18 for details)
+//foreach($config->searchPaths as $searchPath) {
 
-    foreach(FolderInfo::ListFiles($searchPath) as $file) {
-        require_once($file);
-    }
+    //foreach(FolderInfo::ListFiles($searchPath) as $file) {
+        //require_once($file);
+    //}
 
-}
+//}
 
 //create a new server instance
 $server = new Server($config);
