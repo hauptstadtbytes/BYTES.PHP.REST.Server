@@ -50,6 +50,7 @@ class HelloEndpoint extends EndpointExtension {
             case "html":
                 //create the output layout
                 $layout = new HTMLResponseLayout($reqContext);
+                $layout->head = "<title>Hello</title>";
                 $layout->body = "<h1>Hello</h1><p>...world!</p>";
                 break;
 

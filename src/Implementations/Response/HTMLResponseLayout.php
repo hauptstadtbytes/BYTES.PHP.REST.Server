@@ -23,7 +23,7 @@ class HTMLResponseLayout implements IResponseLayout {
             $this->head = "";
         }
 
-        $response->getBody()->write("<!DOCTYPE html><html><head>.$this->head.</head><body>".$this->body."</body></html>");
+        $response->getBody()->write("<!DOCTYPE html><html><head>".$this->head."</head><body>".$this->body."</body></html>");
 
         return $response->withHeader('Content-Type', 'text/html')->withStatus(200);
 
